@@ -1,5 +1,6 @@
 import cv2
 from cvzone.HandTrackingModule import HandDetector
+import os
 
 # Initialize the webcam
 cap = cv2.VideoCapture(0)
@@ -15,10 +16,21 @@ scale = 0
 cx, cy = 560, 560  # Center coordinates for zoomed image
 
 # Load an image for zooming
-img1 = cv2.imread(r"Img path")
+image_path = r"C:\Users\Public\Robo.jpeg"
+print(f"Attempting to load image from: {image_path}")
+img1 = cv2.imread(image_path)
 if img1 is None:
-    print("Image not found! Please check the file path.")
+    print("Failed to load image! Please check the file path and ensure the file is accessible.")
     exit()
+else:
+    print("Image loaded successfully!")
+
+# Resize the image to a smaller size initially
+scale_factor = 0.3  # Adjust this value to control the initial size (e.g., 0.5 = 50% of original size)
+h1, w1, _ = img1.shape
+newH, newW = int(h1 * scale_factor), int(w1 * scale_factor)
+img1 = cv2.resize(img1, (newW, newH))
+print("Resized image size:", img1.shape[0], img1.shape[1])
 
 while True:
     # Read frame from the webcam
@@ -51,9 +63,9 @@ while True:
                 length, info, img = detector.findDistance(hands[0]["center"], hands[1]["center"], img)
                 startDist = length
 
-            # Update scale based on the distance between hands
             length, info, img = detector.findDistance(hands[0]["center"], hands[1]["center"], img)
             scale = int((length - startDist) // 2)
+            scale = max(-min(h1, w1) // 2, min(scale, min(h1, w1) // 2))  # Clamp scale
             cx, cy = info[4:]
             print("Scale:", scale)
 
@@ -63,8 +75,6 @@ while True:
         # Apply zoom to the loaded image
         try:
             h1, w1, _ = img1.shape
-            print("Original image size:", h1, w1)
-
             newH, newW = ((h1 + scale) // 2) * 2, ((w1 + scale) // 2) * 2
             print("Resized image size:", newH, newW)
 
@@ -72,7 +82,13 @@ while True:
             img1_resized = cv2.resize(img1, (newW, newH))
 
             # Overlay the resized image onto the webcam feed
-            img[cy - newH // 2:cy + newH // 2, cx - newW // 2:cx + newW // 2] = img1_resized
+            h, w, _ = img.shape
+            top = max(0, cy - newH // 2)
+            bottom = min(h, cy + newH // 2)
+            left = max(0, cx - newW // 2)
+            right = min(w, cx + newW // 2)
+
+            img[top:bottom, left:right] = img1_resized[:bottom-top, :right-left]
         except Exception as e:
             print("Error during resizing or overlay:", e)
 
