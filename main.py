@@ -16,7 +16,7 @@ scale = 0
 cx, cy = 560, 560  # Center coordinates for zoomed image
 
 # Load an image for zooming
-image_path = r"C:\Users\Public\Robo.jpeg"
+image_path = r"./Robo.jpeg"
 print(f"Attempting to load image from: {image_path}")
 img1 = cv2.imread(image_path)
 if img1 is None:
