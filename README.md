@@ -54,7 +54,7 @@ A Python-based real-time hand gesture-controlled image zoom application using Op
 3. **Add your image**:
    Place the image you want to zoom in the project directory (e.g., `Robo.jpg`) and update the script if needed:
    ```python
-   img1 = cv2.imread("Robo.jpg")  # Ensure this matches your image file name
+   img1 = cv2.imread("Robo.jpg")  
    ```
 
 ---
@@ -63,7 +63,7 @@ A Python-based real-time hand gesture-controlled image zoom application using Op
 1. **Run the script**:
    Execute the main script using Python:
    ```bash
-   python main.py  # Replace with your script name if different
+   python main.py 
    ```
 
 2. **Controls**:
